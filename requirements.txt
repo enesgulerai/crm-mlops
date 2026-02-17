@@ -23,3 +23,7 @@ skl2onnx
 fastapi
 uvicorn
 pydantic
+
+# --- UI (Streamlit) ---
+streamlit
+requests
