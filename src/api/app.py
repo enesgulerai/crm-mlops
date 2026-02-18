@@ -40,7 +40,7 @@ def home():
 @app.post("/predict")
 def predict_churn(data: CustomerData):
     try:
-        input_data = data.dict()
+        input_data = data.model_dump()
         
         pipeline = PredictPipeline()
         prediction = pipeline.predict(input_data)

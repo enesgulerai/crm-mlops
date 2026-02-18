@@ -27,3 +27,7 @@ pydantic
 # --- UI (Streamlit) ---
 streamlit
 requests
+
+# --- TEST ---
+pytest
+httpx
