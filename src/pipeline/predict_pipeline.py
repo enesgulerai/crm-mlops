@@ -2,32 +2,33 @@ import sys
 import os
 import pandas as pd
 import joblib
-import onnxruntime as rt
 import numpy as np
+import onnxruntime as ort
 
 from src.utils.exception import CustomException
 
 class PredictPipeline:
     def __init__(self):
         # --- PATH ---
-        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../'))
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.abspath(os.path.join(current_dir, "../../"))
         
-        self.model_path = os.path.join(root_dir, "models", "churn_model.onnx")
-        
-        self.preprocessor_path = os.path.join(root_dir, "models", "preprocessor.pkl")
-        
+        self.model_path = os.path.join(project_root, "models", "churn_model.onnx")
+        self.preprocessor_path = os.path.join(project_root, "models", "preprocessor.pkl")
+
+        # Control Mechanism
         if not os.path.exists(self.model_path):
-            raise FileNotFoundError(f"MODEL STILL NOT FOUND! Location being searched: {self.model_path}")
+            raise FileNotFoundError(f"MODEL NOT FOUND! Checked path: {self.model_path}")
+        if not os.path.exists(self.preprocessor_path):
+             raise FileNotFoundError(f"PREPROCESSOR NOT FOUND! Checked path: {self.preprocessor_path}")
+
+        # Load the Model and Preprocessor ONLY ONCE (Load the disk only initially)
+        self.session = ort.InferenceSession(self.model_path)
+        self.preprocessor = joblib.load(self.preprocessor_path)
 
     def predict(self, features):
         try:
-            # 1. Load Preprocessor 
-            preprocessor = joblib.load(self.preprocessor_path)
-            
-            # 2. Load ONNX Model 
-            sess = rt.InferenceSession(self.model_path)
-            
-            # 3. Data Preparation
+            # 1. Data Preparation
             df = pd.DataFrame([features])
             
             if 'TotalCharges' in df.columns:
@@ -37,12 +38,13 @@ class PredictPipeline:
             if 'tenure' in df.columns:
                 df['tenure'] = pd.to_numeric(df['tenure'], errors='coerce').fillna(0)
 
-            data_scaled = preprocessor.transform(df)
+            # 2. Use the preprocessor that is already in RAM (it doesn't go to disk, it's very fast)
+            data_scaled = self.preprocessor.transform(df)
             
-            # 4. Predict
-            input_name = sess.get_inputs()[0].name
-            label_name = sess.get_outputs()[0].name
-            pred_onx = sess.run([label_name], {input_name: data_scaled.astype(np.float32)})[0]
+            # 3. Use the ONNX model already stored in RAM.
+            input_name = self.session.get_inputs()[0].name
+            label_name = self.session.get_outputs()[0].name
+            pred_onx = self.session.run([label_name], {input_name: data_scaled.astype(np.float32)})[0]
             
             return pred_onx[0]
 
