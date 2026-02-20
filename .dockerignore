@@ -1,6 +1,55 @@
-venv/
-__pycache__/
-*.pyc
-.git/
+# -----------------------------
+# 1. Environment and Secrets (Security)
+# -----------------------------
 .env
+venv/
+env/
+.venv/
+
+# -----------------------------
+# 2. Python and Compiled Files
+# -----------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# -----------------------------
+# 3. Packaging and Distribution (Unnecessary Loads)
+# -----------------------------
+build/
+dist/
+*.egg-info/
+*.egg
+wheels/
+
+# -----------------------------
+# 4. Testing and Logging (Trash Can)
+# -----------------------------
 .pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+*.log
+logs/
+
+# -----------------------------
+# 5. IDE and Operating System Junk
+# -----------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# 6. Jupyter and Development Tools
+# -----------------------------
+.ipynb_checkpoints/
+
+# -----------------------------
+# 7. Git History
+# -----------------------------
+.git/
+.gitignore
+.github/
