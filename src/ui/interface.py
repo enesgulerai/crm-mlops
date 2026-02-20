@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import json
+import os
 
 # Page Settings
 st.set_page_config(
@@ -13,22 +14,26 @@ st.title("Customer Churn Estimation System")
 st.write("---")
 st.markdown("""
 This application uses the **XGBoost (ONNX)** model, trained as part of the MLOps project, to
-
 predict whether customers will leave the company.
 """)
 
+# --- API CONNECTION SETTINGS ---
+API_URL = os.getenv("API_URL", "http://localhost:8000")
+
 # Side Menu (API Connection Status)
 st.sidebar.header("System Status")
-API_URL = "http://127.0.0.1:8000"
 
 try:
-    response = requests.get(API_URL)
+    # We send a request to the /docs page to check if the API is up and running.
+    test_url = f"{API_URL}/docs"
+    response = requests.get(test_url)
+    
     if response.status_code == 200:
         st.sidebar.success("API Connection Successful!")
     else:
-        st.sidebar.error("API Error!")
-except:
-    st.sidebar.error("API Unreachable! \nPlease start FastAPI.")
+        st.sidebar.error(f"API Error! \nStatus: {response.status_code}\nTried: {test_url}")
+except Exception as e:
+    st.sidebar.error(f"API Unreachable! \nDetail: {str(e)}")
 
 # --- FORM FIELD ---
 st.subheader("Customer Information")
