@@ -1,9 +1,19 @@
 version: '3.8'
 
 services:
-  # 1. Service: API
+  # 1. Databases Service
+  redis:
+    image: redis:alpine
+    container_name: churn_redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  # 2. API Service
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
     container_name: churn_api
     ports:
       - "8000:8000"
@@ -11,13 +21,18 @@ services:
       - redis
     environment:
       - REDIS_HOST=redis
-      - REDIS_PORT=6379
     restart: always
 
-  # 2. Service: Redis 
-  redis:
-    image: redis:alpine
-    container_name: churn_redis
+  # 3. UI Service
+  ui:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    container_name: churn_ui
     ports:
-      - "6379:6379"
+      - "8501:8501" 
+    depends_on:
+      - api
+    environment:
+      - API_URL=http://api:8000
     restart: always
