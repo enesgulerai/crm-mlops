@@ -1,9 +1,15 @@
-fastapi
-uvicorn
-pydantic
-pandas
-numpy
-scikit-learn
-xgboost
-joblib
-onnxruntime
+# --- Core ML & Data ---
+pandas==2.3.3
+numpy==2.4.2
+joblib==1.5.3
+scikit-learn==1.8.0
+
+# --- Model Serving ---
+onnxruntime==1.24.1
+
+# --- API ---
+fastapi==0.129.0
+uvicorn==0.40.0
+pydantic==2.12.5
+redis==7.2.0
+python-dotenv==1.2.1
