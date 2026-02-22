@@ -4,7 +4,7 @@ import json
 import hashlib
 import redis
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import uvicorn
 
@@ -98,7 +98,7 @@ def predict_churn(data: CustomerData):
         return response_data
         
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run("src.api.app:app", host="127.0.0.1", port=8000, reload=True)
