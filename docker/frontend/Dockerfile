@@ -9,7 +9,7 @@ RUN python -m venv /opt/venv
 
 ENV PATH="/opt/venv/bin:$PATH"
 
-COPY src/ui/requirements.txt ./requirements.txt
+COPY requirements/ui.txt ./requirements.txt
 
 RUN pip install --no-cache-dir -r requirements.txt
 
