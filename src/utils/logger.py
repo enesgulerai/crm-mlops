@@ -34,7 +34,7 @@ def get_logger(logger_name, log_file_name="application.log"):
         log_file_path,
         maxBytes=10 * 1024 * 1024,  # 10 MB
         backupCount=5,
-        encoding="utf-8"
+        encoding="utf-8",
     )
     file_handler.setFormatter(logging.Formatter(LOG_FORMAT, datefmt=DATE_FORMAT))
     file_handler.setLevel(logging.INFO)
