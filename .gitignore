@@ -37,3 +37,6 @@ logs/
 
 # --- Environment Variables ---
 .env
+
+# --- Format ---
+.ruff_cache
