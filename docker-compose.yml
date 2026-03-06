@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # 1. Databases Service
+  # 1. DATABASES SERVICE
   redis:
     image: redis:alpine
     container_name: churn_redis
@@ -9,7 +9,7 @@ services:
       - "6379:6379"
     restart: always
 
-  # 2. API Service
+  # 2. API SERVICE
   api:
     build:
       context: .
@@ -21,9 +21,10 @@ services:
       - redis
     environment:
       - REDIS_HOST=redis
+      - REDIS_TIMEOUT=5.0
     restart: always
 
-  # 3. UI Service
+  # 3. UI SERVICE
   ui:
     build:
       context: .

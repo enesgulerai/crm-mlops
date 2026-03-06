@@ -15,10 +15,18 @@ from src.pipeline.predict_pipeline import PredictPipeline
 
 # --- REDIS ---
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-redis_client = redis.Redis(host=REDIS_HOST, port=6379, db=0, decode_responses=True)
+REDIS_TIMEOUT = float(os.getenv("REDIS_TIMEOUT", 1.0)) 
+
+redis_client = redis.Redis(
+    host=REDIS_HOST, 
+    port=6379, 
+    db=0, 
+    decode_responses=True, 
+    socket_connect_timeout=REDIS_TIMEOUT, 
+    socket_timeout=REDIS_TIMEOUT
+)
 
 ml_models = {}
-
 
 # --- LIFESPAN ---
 @asynccontextmanager
@@ -32,9 +40,7 @@ async def lifespan(app: FastAPI):
     ml_models.clear()
     print("API closed, memory cleared.")
 
-
 app = FastAPI(title="CRM Churn Prediction API", version="2.0", lifespan=lifespan)
-
 
 # --- DATA VERIFICATION (Pydantic) ---
 class CustomerData(BaseModel):
@@ -58,54 +64,52 @@ class CustomerData(BaseModel):
     MonthlyCharges: float
     TotalCharges: float
 
-
 # --- AUXILIARY FUNCTION: Request Hashing ---
 def generate_cache_key(data_dict: dict) -> str:
     """It converts the incoming JSON data into a unique hash."""
     data_str = json.dumps(data_dict, sort_keys=True)
     return hashlib.md5(data_str.encode()).hexdigest()
 
-
 @app.get("/")
 def home():
     return {"message": "API is Running with Redis Cache"}
 
-
 @app.post("/predict")
 def predict_churn(data: CustomerData):
+    input_data = data.model_dump()
+    cache_key = f"churn_pred:{generate_cache_key(input_data)}"
+
     try:
-        input_data = data.model_dump()
-
-        # STEP 1: Check on Redis if this customer has been requested before.
-        cache_key = f"churn_pred:{generate_cache_key(input_data)}"
         cached_result = redis_client.get(cache_key)
-
         if cached_result:
-            # If it exists in Redis, just spin it directly without running the model at all.
             response = json.loads(cached_result)
-            response["source"] = "Redis Cache"  # Let it show us where it came from
+            response["source"] = "Redis Cache"
             return response
+    except Exception as e:
+        print(f"Warning: Redis read failed (Cache skipped). Details: {e}")
 
-        # STEP 2: If it's not in Redis, use a pre-existing model in RAM and make a prediction.
+    try:
         pipeline = ml_models["pipeline"]
         prediction = pipeline.predict(input_data)
-
-        result = "Churn" if prediction == 1 else "Not Churn"
+        
+        pred_value = int(prediction[0]) if isinstance(prediction, (list, tuple, object)) and hasattr(prediction, '__iter__') else int(prediction)
+        
+        result = "Churn" if pred_value == 1 else "Not Churn"
 
         response_data = {
-            "prediction": int(prediction),
+            "prediction": pred_value,
             "status": result,
             "source": "ML Model",
         }
-
-        # STEP 3: Save the result to Redis (For example: store for 1 hour = 3600 seconds)
-        redis_client.setex(cache_key, 3600, json.dumps(response_data))
-
-        return response_data
-
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Model prediction error: {str(e)}")
 
+    try:
+        redis_client.setex(cache_key, 3600, json.dumps(response_data))
+    except Exception as e:
+        print(f"Warning: Redis write failed. Details: {e}")
+
+    return response_data
 
 if __name__ == "__main__":
     uvicorn.run("src.api.app:app", host="127.0.0.1", port=8000, reload=True)
