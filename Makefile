@@ -54,11 +54,15 @@ k8s-build:
 	docker build -t crm-mlops-api:latest -f docker/backend/Dockerfile .
 	docker build -t crm-mlops-ui:latest -f docker/frontend/Dockerfile .
 
-k8s-up: k8s-build
-	kubectl apply -f k8s/
+######################
+# HELM
+######################
+helm-up: k8s-build
+	helm upgrade --install crm-mlops-release ./crm-mlops-chart
 
-k8s-down:
-	kubectl delete -f k8s/
+helm-down:
+	helm uninstall crm-mlops-release
 
-k8s-status:
+helm-status:
+	helm list
 	kubectl get pods,svc,deployments

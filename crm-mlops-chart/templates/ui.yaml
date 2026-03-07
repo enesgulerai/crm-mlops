@@ -1,0 +1,52 @@
+---
+# UI DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-deployment
+  labels:
+    app: ui
+spec:
+  replicas: {{ .Values.ui.replicaCount }}
+  selector:
+    matchLabels:
+      app: ui
+  template:
+    metadata:
+      labels:
+        app: ui
+    spec:
+      containers:
+        - name: ui
+          image: "{{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag }}"
+          imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.ui.service.port }}
+          env:
+            - name: API_URL
+              value: {{ .Values.ui.env.apiUrl | quote }}
+          resources:
+            requests:
+              memory: {{ .Values.ui.resources.requests.memory | quote }}
+              cpu: {{ .Values.ui.resources.requests.cpu | quote }}
+            limits:
+              memory: {{ .Values.ui.resources.limits.memory | quote }}
+              cpu: {{ .Values.ui.resources.limits.cpu | quote }}
+
+---
+# UI SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui
+  labels:
+    app: ui
+spec:
+  type: {{ .Values.ui.service.type }}
+  selector:
+    app: ui
+  ports:
+    - protocol: TCP
+      port: {{ .Values.ui.service.port }}
+      targetPort: {{ .Values.ui.service.port }}
+      nodePort: {{ .Values.ui.service.nodePort }}
