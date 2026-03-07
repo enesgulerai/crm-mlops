@@ -17,6 +17,10 @@ help:
 	@echo " Code Quality (Ruff):"
 	@echo "   make lint    : Scans for errors and unused imports"
 	@echo "   make format  : Formats code to industry standards"
+	@echo " Kubernetes Commands:"
+	@echo "   make k8s-up  : Applies all manifests in the k8s directory"
+	@echo "   make k8s-down: Deletes all resources defined in the k8s directory"
+	@echo "   make k8s-status: Shows the current status of pods, services, and deployments"
 	@echo "================================================================="
 
 ######################
@@ -42,3 +46,19 @@ lint:
 
 format:
 	ruff format .
+
+######################
+# KUBERNETES
+######################
+k8s-build:
+	docker build -t crm-mlops-api:latest -f docker/backend/Dockerfile .
+	docker build -t crm-mlops-ui:latest -f docker/frontend/Dockerfile .
+
+k8s-up: k8s-build
+	kubectl apply -f k8s/
+
+k8s-down:
+	kubectl delete -f k8s/
+
+k8s-status:
+	kubectl get pods,svc,deployments
