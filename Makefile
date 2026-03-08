@@ -17,10 +17,10 @@ help:
 	@echo " Code Quality (Ruff):"
 	@echo "   make lint    : Scans for errors and unused imports"
 	@echo "   make format  : Formats code to industry standards"
-	@echo " Kubernetes Commands:"
-	@echo "   make k8s-up  : Applies all manifests in the k8s directory"
-	@echo "   make k8s-down: Deletes all resources defined in the k8s directory"
-	@echo "   make k8s-status: Shows the current status of pods, services, and deployments"
+	@echo " Helm Commands:"
+	@echo "   make helm-up    : Installs or upgrades the Helm release (crm-mlops-release)"
+	@echo "   make helm-down  : Uninstalls the Helm release and cleans up all associated resources"
+	@echo "   make helm-status: Displays the Helm release revision and cluster resource status"
 	@echo "================================================================="
 
 ######################
