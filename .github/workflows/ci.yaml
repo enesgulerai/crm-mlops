@@ -33,5 +33,11 @@ jobs:
       - name: Run Linter
         run: ruff check .
 
+      - name: Download ML Models from Drive
+        run: |
+          mkdir -p models 
+          gdown --id "1Si7nr4xv9p_KcLAzSdF04HGYxE4bmK7H" -O models/churn_model.onnx
+          gdown --id "1hRe3Nmp_RtLjSHapadgzsKTXIjSsoFis" -O models/preprocessor.pkl
+
       - name: Run Unit Tests
         run: pytest
