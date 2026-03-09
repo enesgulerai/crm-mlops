@@ -1,27 +1,28 @@
-import pandas as pd
-import yaml
 import os
-import xgboost as xgb
-import optuna
 
-# Metrics & Sklearn
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.metrics import (
-    classification_report,
-    roc_auc_score,
-    confusion_matrix,
-    accuracy_score,
-)
+import optuna
+import pandas as pd
+import xgboost as xgb
+import yaml
+from onnxmltools.convert.xgboost.operator_converters.XGBoost import convert_xgboost
 
 # ONNX
 from skl2onnx import convert_sklearn, update_registered_converter
 from skl2onnx.common.data_types import FloatTensorType, StringTensorType
 from skl2onnx.common.shape_calculator import calculate_linear_classifier_output_shapes
-from onnxmltools.convert.xgboost.operator_converters.XGBoost import convert_xgboost
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    confusion_matrix,
+    roc_auc_score,
+)
+
+# Metrics & Sklearn
+from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
 
 
 # --- CONFIG LOADING ---

@@ -1,5 +1,6 @@
-import sys
 import os
+import sys
+
 import pandas as pd
 
 # Path Settings
@@ -7,14 +8,15 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"
 
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.model_selection import train_test_split
+
+from src.utils.common import load_config, save_object
 
 # My own modules
 from src.utils.exception import CustomException
 from src.utils.logger import get_logger
-from src.utils.common import load_config, save_object
 
 logger = get_logger(__name__)
 

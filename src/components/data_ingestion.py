@@ -1,14 +1,15 @@
 import os
 import sys
-import pandas as pd
+
 import gdown
+import pandas as pd
 
 # --- PATH SETTINGS ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from src.utils.logger import get_logger
-from src.utils.exception import CustomException
 from src.utils.common import load_config
+from src.utils.exception import CustomException
+from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

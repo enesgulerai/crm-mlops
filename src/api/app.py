@@ -1,12 +1,13 @@
-import sys
-import os
-import json
 import hashlib
-import redis
+import json
+import os
+import sys
 from contextlib import asynccontextmanager
+
+import redis
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import uvicorn
 
 # --- PATH ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))

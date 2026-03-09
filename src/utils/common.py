@@ -1,7 +1,9 @@
 import os
-import yaml
-import sys
 import pickle
+import sys
+
+import yaml
+
 from src.utils.exception import CustomException
 from src.utils.logger import get_logger
 

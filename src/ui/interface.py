@@ -1,6 +1,7 @@
-import streamlit as st
-import requests
 import os
+
+import requests
+import streamlit as st
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(

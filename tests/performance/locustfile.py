@@ -1,5 +1,6 @@
-from locust import HttpUser, task, between
 import random
+
+from locust import HttpUser, between, task
 
 
 class ChurnPredictionUser(HttpUser):
@@ -12,7 +13,8 @@ class ChurnPredictionUser(HttpUser):
 
     @task(5)
     def predict_churn(self):
-        """The POST request (@task(5) is what will really strain the model and Redis, so it will run 5 times more frequently)."""
+        """The POST request (@task(5) is what will really strain the model and Redis,
+          so it will run 5 times more frequently)."""
 
         payload = {
             "gender": "Female",
