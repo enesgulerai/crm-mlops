@@ -64,9 +64,7 @@ class ModelTrainer:
     def train_and_save_onnx(self, X_train, y_train, X_test, y_test):
         try:
             # 1. Optimization
-            best_params = self.optimize_hyperparameters(
-                X_train, y_train, X_test, y_test
-            )
+            best_params = self.optimize_hyperparameters(X_train, y_train, X_test, y_test)
 
             # 2. Final Model Training
             logger.info("Training Final Model (Offline)...")
@@ -82,9 +80,7 @@ class ModelTrainer:
             # 4. ONNX Conversion and Local Registration
             logger.info("Converting to ONNX and Saving Locally...")
             initial_type = [("float_input", FloatTensorType([None, X_train.shape[1]]))]
-            onnx_model = onnxmltools.convert_xgboost(
-                final_model, initial_types=initial_type
-            )
+            onnx_model = onnxmltools.convert_xgboost(final_model, initial_types=initial_type)
 
             # Folder Control
             os.makedirs(os.path.dirname(self.onnx_path), exist_ok=True)
@@ -109,9 +105,7 @@ if __name__ == "__main__":
         df = ingestion.initiate_data_ingestion()
 
         transformer = DataTransformation()
-        X_train, X_test, y_train, y_test, _ = transformer.initiate_data_transformation(
-            df
-        )
+        X_train, X_test, y_train, y_test, _ = transformer.initiate_data_transformation(df)
 
         trainer = ModelTrainer()
         trainer.train_and_save_onnx(X_train, y_train, X_test, y_test)

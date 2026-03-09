@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from src.api.app import app
 
+
 @pytest.fixture(scope="session")
 def client():
     """
@@ -15,6 +16,7 @@ def client():
     """
     with TestClient(app) as c:
         yield c
+
 
 @pytest.fixture(scope="session")
 def valid_payload():

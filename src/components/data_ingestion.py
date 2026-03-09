@@ -56,9 +56,7 @@ class DataIngestion:
             if "customerID" in df.columns:
                 df = df.drop(["customerID"], axis=1)
 
-            df["TotalCharges"] = pd.to_numeric(
-                df["TotalCharges"], errors="coerce"
-            ).fillna(0)
+            df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce").fillna(0)
 
             target_col = "Churn"
             categorical_cols = df.select_dtypes(include=["object"]).columns

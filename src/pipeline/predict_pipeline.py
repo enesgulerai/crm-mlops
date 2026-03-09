@@ -15,9 +15,7 @@ class PredictPipeline:
         project_root = os.path.abspath(os.path.join(current_dir, "../../"))
 
         self.model_path = os.path.join(project_root, "models", "churn_model.onnx")
-        self.preprocessor_path = os.path.join(
-            project_root, "models", "preprocessor.pkl"
-        )
+        self.preprocessor_path = os.path.join(project_root, "models", "preprocessor.pkl")
 
         # Control Mechanism
         if not os.path.exists(self.model_path):
@@ -37,13 +35,11 @@ class PredictPipeline:
             df = pd.DataFrame([features])
 
             if "TotalCharges" in df.columns:
-                df["TotalCharges"] = pd.to_numeric(
-                    df["TotalCharges"], errors="coerce"
-                ).fillna(0)
+                df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce").fillna(0)
             if "MonthlyCharges" in df.columns:
-                df["MonthlyCharges"] = pd.to_numeric(
-                    df["MonthlyCharges"], errors="coerce"
-                ).fillna(0)
+                df["MonthlyCharges"] = pd.to_numeric(df["MonthlyCharges"], errors="coerce").fillna(
+                    0
+                )
             if "tenure" in df.columns:
                 df["tenure"] = pd.to_numeric(df["tenure"], errors="coerce").fillna(0)
 
@@ -53,9 +49,9 @@ class PredictPipeline:
             # 3. Use the ONNX model already stored in RAM.
             input_name = self.session.get_inputs()[0].name
             label_name = self.session.get_outputs()[0].name
-            pred_onx = self.session.run(
-                [label_name], {input_name: data_scaled.astype(np.float32)}
-            )[0]
+            pred_onx = self.session.run([label_name], {input_name: data_scaled.astype(np.float32)})[
+                0
+            ]
 
             return pred_onx[0]
 

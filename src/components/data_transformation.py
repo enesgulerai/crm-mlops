@@ -107,9 +107,7 @@ class DataTransformation:
 
             # --- Manual Adjustments ---
             # TotalCharges can sometimes be a string, convert it to a number.
-            df["TotalCharges"] = pd.to_numeric(
-                df["TotalCharges"], errors="coerce"
-            ).fillna(0)
+            df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce").fillna(0)
 
             # Convert Targegt (Chrun) to a number (Yes->1, No->0)
             logger.info("The target variable (Churn) is being encoded....")
@@ -135,12 +133,8 @@ class DataTransformation:
             X_test_arr = preprocessing_obj.transform(X_test)
 
             # --- SAVING (PICKLE) ---
-            logger.info(
-                f"Preprocesser is being registered: {self.preprocessor_obj_file_path}"
-            )
-            save_object(
-                file_path=self.preprocessor_obj_file_path, obj=preprocessing_obj
-            )
+            logger.info(f"Preprocesser is being registered: {self.preprocessor_obj_file_path}")
+            save_object(file_path=self.preprocessor_obj_file_path, obj=preprocessing_obj)
 
             logger.info("Data transformation has been successfully completed.")
 
@@ -164,9 +158,7 @@ if __name__ == "__main__":
         df = ingestion.initiate_data_ingestion()
 
         transformer = DataTransformation()
-        X_train, X_test, y_train, y_test, _ = transformer.initiate_data_transformation(
-            df
-        )
+        X_train, X_test, y_train, y_test, _ = transformer.initiate_data_transformation(df)
 
         print("\n----- TRANSFORMATION RESULT -----")
         print(f"x_train size: {X_train.shape}")

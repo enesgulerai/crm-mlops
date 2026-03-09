@@ -11,7 +11,8 @@ st.set_page_config(
 )
 
 # --- CUSTOM CSS ---
-st.markdown("""
+st.markdown(
+    """
     <style>
     .main {
         background-color: #f8f9fa;
@@ -29,7 +30,9 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 
 # --- API CONNECTION ---
@@ -39,7 +42,7 @@ with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3256/3256114.png", width=100)
     st.title("System Status")
     st.markdown("---")
-    
+
     try:
         test_url = f"{API_URL}/docs"
         response = requests.get(test_url, timeout=2)
@@ -50,7 +53,7 @@ with st.sidebar:
             st.error("🔴 API Offline", icon="🚨")
     except Exception:
         st.error("🔴 Connection Failed", icon="🚨")
-        
+
     st.markdown("---")
     st.markdown("""
         **Model Info:**
@@ -77,7 +80,9 @@ with tab1:
         gender = st.radio("Gender", ["Female", "Male"], horizontal=True)
         partner = st.selectbox("Has Partner?", ["Yes", "No"])
     with col2:
-        senior_citizen = st.selectbox("Senior Citizen (>65)?", [0, 1], format_func=lambda x: "Yes" if x == 1 else "No")
+        senior_citizen = st.selectbox(
+            "Senior Citizen (>65)?", [0, 1], format_func=lambda x: "Yes" if x == 1 else "No"
+        )
         dependents = st.selectbox("Has Dependents?", ["Yes", "No"])
 
 with tab2:
@@ -104,9 +109,19 @@ with tab3:
         contract = st.selectbox("Contract Type", ["Month-to-month", "One year", "Two year"])
     with col2:
         paperless_billing = st.radio("Paperless Billing", ["Yes", "No"], horizontal=True)
-        payment_method = st.selectbox("Payment Method", ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"])
+        payment_method = st.selectbox(
+            "Payment Method",
+            [
+                "Electronic check",
+                "Mailed check",
+                "Bank transfer (automatic)",
+                "Credit card (automatic)",
+            ],
+        )
     with col3:
-        monthly_charges = st.number_input("Monthly Charges ($)", min_value=0.0, value=50.0, step=5.0)
+        monthly_charges = st.number_input(
+            "Monthly Charges ($)", min_value=0.0, value=50.0, step=5.0
+        )
         total_charges = st.number_input("Total Charges ($)", min_value=0.0, value=500.0, step=50.0)
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -147,31 +162,41 @@ if predict_button:
             result = response.json()
             prediction = result["prediction"]
             status = result["status"]
-            
+
             st.divider()
-            
+
             # --- RESULTS DASHBOARD ---
             res_col1, res_col2 = st.columns(2)
-            
+
             if prediction == 1:
                 with res_col1:
                     st.error("🚨 HIGH CHURN RISK DETECTED")
                     st.markdown(f"**Status:** {status}")
                     st.markdown("Immediate retention action is required for this customer.")
                 with res_col2:
-                    st.metric(label="Risk Assessment", value="Critical", delta="-Retention Action Needed", delta_color="inverse")
+                    st.metric(
+                        label="Risk Assessment",
+                        value="Critical",
+                        delta="-Retention Action Needed",
+                        delta_color="inverse",
+                    )
             else:
                 with res_col1:
                     st.success("✅ LOW CHURN RISK")
                     st.markdown(f"**Status:** {status}")
                     st.markdown("Customer exhibits stable engagement patterns.")
                 with res_col2:
-                    st.metric(label="Risk Assessment", value="Stable", delta="Customer is Safe", delta_color="normal")
-                    
+                    st.metric(
+                        label="Risk Assessment",
+                        value="Stable",
+                        delta="Customer is Safe",
+                        delta_color="normal",
+                    )
+
         else:
             st.error(f"API Error: {response.status_code} - {response.text}")
 
     except requests.exceptions.Timeout:
-         st.error("Timeout Error: The API took too long to respond.")
+        st.error("Timeout Error: The API took too long to respond.")
     except Exception as e:
         st.error(f"System Error: {str(e)}")

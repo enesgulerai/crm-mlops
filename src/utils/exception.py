@@ -1,5 +1,3 @@
-
-
 def error_message_detail(error, error_detail):
     # Hata detayını alıyoruz
     _, _, exc_tb = error_detail.exc_info()
@@ -20,9 +18,7 @@ class CustomException(Exception):
         # Parent class'a (Exception) mesajı gönder
         super().__init__(error_message)
         # Kendi mesajımızı oluştur
-        self.error_message = error_message_detail(
-            error_message, error_detail=error_detail
-        )
+        self.error_message = error_message_detail(error_message, error_detail=error_detail)
 
     def __str__(self):
         return self.error_message

@@ -88,9 +88,7 @@ def feature_engineering(df):
     if existing:
         flag_cols = [c + "_Flag" for c in existing]
         df_fe["TotalServices"] = df_fe[flag_cols].sum(axis=1)
-        df_fe["AvgChargePerService"] = df_fe["MonthlyCharges"] / (
-            df_fe["TotalServices"] + 1
-        )
+        df_fe["AvgChargePerService"] = df_fe["MonthlyCharges"] / (df_fe["TotalServices"] + 1)
         df_fe = df_fe.drop(flag_cols, axis=1)
     return df_fe
 
@@ -134,9 +132,7 @@ def objective(trial, X, y, preprocessor):
         "max_depth": trial.suggest_int("max_depth", 3, 9),
         "eta": trial.suggest_float("eta", 0.01, 0.3),
         "gamma": trial.suggest_float("gamma", 1e-8, 1.0, log=True),
-        "grow_policy": trial.suggest_categorical(
-            "grow_policy", ["depthwise", "lossguide"]
-        ),
+        "grow_policy": trial.suggest_categorical("grow_policy", ["depthwise", "lossguide"]),
     }
     model = xgb.XGBClassifier(**param, random_state=params["base"]["random_state"])
     pipeline = Pipeline(steps=[("preprocessor", preprocessor), ("classifier", model)])
@@ -176,9 +172,7 @@ def main():
 
     print("Final Model...")
     final_model = xgb.XGBClassifier(**study.best_trial.params, random_state=42)
-    pipeline = Pipeline(
-        steps=[("preprocessor", preprocessor), ("classifier", final_model)]
-    )
+    pipeline = Pipeline(steps=[("preprocessor", preprocessor), ("classifier", final_model)])
     pipeline.fit(X_train, y_train)
 
     # 3. Evaluation
@@ -199,9 +193,7 @@ def main():
     print("ONNX Export...")
     os.makedirs(os.path.dirname(params["model"]["output_path"]), exist_ok=True)
     initial_types = [
-        (c, StringTensorType([None, 1]))
-        if c in cat_cols
-        else (c, FloatTensorType([None, 1]))
+        (c, StringTensorType([None, 1])) if c in cat_cols else (c, FloatTensorType([None, 1]))
         for c in X.columns
     ]
 
