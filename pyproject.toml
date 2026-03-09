@@ -1,11 +1,14 @@
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
-addopts = "-v -s" 
+addopts = "-v -s"
+pythonpath = ["src", "."]
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+exclude = [".git", "__pycache__", "venv", ".venv", "env"]
 
 [tool.ruff.lint]
+select = ["E", "F", "I"]
 ignore = []
