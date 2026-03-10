@@ -24,6 +24,18 @@ help:
 	@echo "================================================================="
 
 ######################
+# LOCAL
+######################
+install:
+	python -m pip install --upgrade pip
+	pip install -r requirements/base.txt
+
+train:
+	python src/components/data_ingestion.py
+	python src/components/data_transformation.py
+	python src/components/model_trainer.py
+
+######################
 # DOCKER
 ######################
 up:
@@ -37,6 +49,9 @@ down:
 ######################
 test:
 	pytest tests/ -v
+
+stress-test:
+	locust -f tests/performance/locustfile.py
 
 ######################
 # FORMAT

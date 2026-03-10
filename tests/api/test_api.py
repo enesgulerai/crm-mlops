@@ -50,11 +50,11 @@ def test_predict_endpoint_method_not_allowed(client):
 
 def test_health_check_endpoint(client):
     """
-    Test the health endpoint. 
+    Test the health endpoint.
     Essential for Kubernetes liveness and readiness probes.
     """
     response = client.get("/health")
-    # If you haven't implemented /health yet, this test will fail (404). 
+    # If you haven't implemented /health yet, this test will fail (404).
     # It acts as a reminder to build it for Kubernetes!
     if response.status_code == 200:
         assert response.json().get("status") == "healthy"

@@ -1,7 +1,10 @@
 import os
+
 import pandas as pd
 import pytest
+
 from src.components.data_transformation import DataTransformation
+
 
 @pytest.fixture
 def dummy_raw_data():
@@ -28,9 +31,10 @@ def dummy_raw_data():
         "PaymentMethod": ["Electronic check", "Mailed check", "Bank transfer (automatic)"],
         "MonthlyCharges": [29.85, 56.95, 53.85],
         "TotalCharges": ["29.85", "1889.5", "108.15"],
-        "Churn": ["No", "No", "Yes"]
+        "Churn": ["No", "No", "Yes"],
     }
     return pd.DataFrame(data)
+
 
 def test_data_transformation_pipeline(dummy_raw_data, tmp_path):
     """
@@ -39,35 +43,35 @@ def test_data_transformation_pipeline(dummy_raw_data, tmp_path):
     """
     # 1. Initialize the transformer component
     transformer = DataTransformation()
-    
+
     # Override the save path to a temporary directory using pytest's built-in tmp_path
     # This ensures we don't accidentally overwrite our production preprocessor.pkl during tests
     if hasattr(transformer, "data_transformation_config"):
         transformer.data_transformation_config.preprocessor_obj_file_path = os.path.join(
             tmp_path, "test_preprocessor.pkl"
         )
-    
+
     # 2. Separate features from the target
     X = dummy_raw_data.drop(columns=["Churn"])
-    
+
     # Simulate the raw string-to-numeric conversion if it happens before the transformer
     if "TotalCharges" in X.columns:
         X["TotalCharges"] = pd.to_numeric(X["TotalCharges"], errors="coerce").fillna(0)
-        
+
     # 3. Get the preprocessor object (ColumnTransformer)
     # Note: Adjust the method name 'get_data_transformer_object' if it differs in your codebase
     preprocessor = transformer.get_data_transformer_object()
-    
+
     # 4. Apply the transformation
     X_transformed = preprocessor.fit_transform(X)
-    
+
     # --- ASSERTIONS ---
-    
+
     # Check that the output is not empty
     assert X_transformed is not None, "Transformed data should not be None"
-    
+
     # Check that the number of rows remained exactly the same
     assert X_transformed.shape[0] == X.shape[0], "Row count mismatch after transformation"
-    
+
     # Check that the number of columns increased due to One-Hot Encoding
     assert X_transformed.shape[1] > X.shape[1], "Column count should increase after OHE"
