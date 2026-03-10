@@ -16,6 +16,7 @@ api:
   service:
     port: 8000
     type: ClusterIP
+    nodePort: 30001
   env:
     redisHost: "redis"
     redisTimeout: "5.0"
