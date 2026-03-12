@@ -29,9 +29,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=builder /opt/venv /opt/venv
 
-COPY . .
+RUN adduser --disabled-password --gecos "" apiuser
+COPY --chown=apiuser:apiuser . .
 
-RUN adduser --disabled-password --gecos "" apiuser && chown -R apiuser /app
 USER apiuser
 
 EXPOSE 8000
