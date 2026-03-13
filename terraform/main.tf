@@ -94,3 +94,27 @@ output "server_public_ip" {
     value       = aws_instance.mlops_server.public_ip
     description = "The public IP address of the newly created EC2 instance"
 }
+
+# S3 Bucket for ML Models
+resource "aws_s3_bucket" "ml_models_bucket" {
+    bucket = "crm-mlops-models-enesguler" 
+    
+    tags = {
+        Name        = "ML Models Storage"
+        Environment = "Production"
+    }
+}
+
+# Enable Versioning
+resource "aws_s3_bucket_versioning" "ml_models_versioning" {
+    bucket = aws_s3_bucket.ml_models_bucket.id
+    
+    versioning_configuration {
+        status = "Enabled"
+    }
+}
+
+output "s3_bucket_name" {
+    value       = aws_s3_bucket.ml_models_bucket.bucket
+    description = "The name of the S3 bucket storing ML models"
+}
