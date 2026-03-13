@@ -1,4 +1,6 @@
-# --- Python ---
+# -----------------------------
+# Python
+# -----------------------------
 __pycache__/
 *.pyc
 *.pyo
@@ -11,11 +13,15 @@ pip-log.txt
 pip-delete-this-directory.txt
 .pytest_cache
 
-# --- Jupyter Notebooks ---
+# -----------------------------
+# Notebooks
+# -----------------------------
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
-# --- MLOps & Data  ---
+# -----------------------------
+# MLOps & Data
+# -----------------------------
 data/
 data/raw/
 data/processed/
@@ -25,18 +31,46 @@ models/
 *.pkl
 *.joblib
 
-# --- IDE & Configs ---
+# -----------------------------
+# IDE & Configs
+# -----------------------------
 .vscode/
 .idea/
 *.swp
 .DS_Store
 
-# --- Logs ---
+# -----------------------------
+# Logs
+# -----------------------------
 *.log
 logs/
 
-# --- Environment Variables ---
+# -----------------------------
+# Environment Variables
+# -----------------------------
+**/.terraform/*
 .env
 
-# --- Format ---
+# -----------------------------
+# Format
+# -----------------------------
+**/.terraform/*
 .ruff_cache
+
+# -----------------------------
+# Terraform
+# -----------------------------
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+.terraform.lock.hcl

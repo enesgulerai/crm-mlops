@@ -53,3 +53,8 @@ Thumbs.db
 .git/
 .gitignore
 .github/
+
+# -----------------------------
+# 8. Infrastructure
+# -----------------------------
+terraform/
