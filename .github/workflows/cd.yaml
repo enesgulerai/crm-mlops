@@ -1,4 +1,4 @@
-name: CD Pipeline
+name: Continuous Deployment
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/crm-mlops-ui:latest
 
-deploy:
+  deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
