@@ -11,9 +11,7 @@ services:
 
   # 2. API SERVICE
   api:
-    build:
-      context: .
-      dockerfile: docker/backend/Dockerfile
+    image: ghcr.io/enesgulerai/crm-mlops/crm-mlops-api:latest
     container_name: churn_api
     ports:
       - "8000:8000"
@@ -26,9 +24,7 @@ services:
 
   # 3. UI SERVICE
   ui:
-    build:
-      context: .
-      dockerfile: docker/frontend/Dockerfile
+    image: ghcr.io/enesgulerai/crm-mlops/crm-mlops-ui:latest
     container_name: churn_ui
     ports:
       - "8501:8501" 
