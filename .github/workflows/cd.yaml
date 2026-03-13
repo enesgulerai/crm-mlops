@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir -p models
           aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/churn_model.onnx models/churn_model.onnx
-
+          aws s3 cp s3://${{ secrets.S3_BUCKET_NAME }}/preprocessor.pkl models/preprocessor.pkl
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
