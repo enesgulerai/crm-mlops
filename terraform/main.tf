@@ -15,7 +15,7 @@ resource "aws_security_group" "mlops_sg" {
     name        = "mlops-architecture-sg"
     description = "Security group for MLOps FastAPI and UI"
 
-    # SSH Access
+    # SSH Access (Consider restricting 0.0.0.0/0 to your personal IP in strict production)
     ingress {
         from_port   = 22
         to_port     = 22
@@ -48,7 +48,6 @@ resource "aws_security_group" "mlops_sg" {
     }
 }
 
-# AWS Key Pair mapping
 resource "aws_key_pair" "deployer_key" {
     key_name   = "crm-mlops-deployer-key"
     public_key = file("~/.ssh/crm_mlops_key.pub")
@@ -68,9 +67,7 @@ resource "aws_instance" "mlops_server" {
     ami           = data.aws_ami.ubuntu.id
     instance_type = "t3.small"
 
-    # Attach the SSH Key
-    key_name      = aws_key_pair.deployer_key.key_name
-
+    key_name               = aws_key_pair.deployer_key.key_name
     vpc_security_group_ids = [aws_security_group.mlops_sg.id]
 
     user_data = <<-EOF
@@ -114,7 +111,23 @@ resource "aws_s3_bucket_versioning" "ml_models_versioning" {
     }
 }
 
-output "s3_bucket_name" {
-    value       = aws_s3_bucket.ml_models_bucket.bucket
-    description = "The name of the S3 bucket storing ML models"
+# DevSecOps: Explicitly block all public access to the bucket
+resource "aws_s3_bucket_public_access_block" "ml_models_block_public_access" {
+    bucket = aws_s3_bucket.ml_models_bucket.id
+
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+}
+
+# Elastic IP
+resource "aws_eip" "ml_eip" {
+    instance = aws_instance.mlops_server.id
+    domain   = "vpc"
+}
+
+output "elastic_ip" {
+    value       = aws_eip.ml_eip.public_ip
+    description = "The Elastic IP address assigned to the EC2 instance"
 }
