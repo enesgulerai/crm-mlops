@@ -82,6 +82,13 @@ resource "aws_instance" "mlops_server" {
               apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
               usermod -aG docker ubuntu
               EOF
+
+    metadata_options {
+        http_endpoint = "enabled"
+        http_tokens = "required"
+        http_put_response_hop_limit = 1
+    }
+    
     tags = {
         Name = "CRM-MLOps-Production"
     }
