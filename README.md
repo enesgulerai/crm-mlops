@@ -10,6 +10,8 @@
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 ![MLflow](https://img.shields.io/badge/mlflow-%23d9ead3.svg?style=for-the-badge&logo=mlflow&logoColor=blue)
 ![ArgoCD](https://img.shields.io/badge/argo%20cd-ef7b4d?style=for-the-badge&logo=argo-cd&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 
 A highly scalable, production-ready Machine Learning serving architecture designed to predict customer churn in real-time. This repository demonstrates a complete GitOps-driven MLOps lifecycle, featuring an asynchronous inference layer, graceful degradation caching, and Kubernetes orchestration.
 
@@ -32,6 +34,16 @@ This system is engineered for high availability and extreme load tolerance. It m
 
 * **Memory-Optimized Engine:** The pipeline uses ONNX runtime for predictions, completely decoupling the heavy Scikit-Learn training environment from the lightweight serving environment.
 * **Infrastructure as Code (IaC):** Entire deployment topology, including load balancers, replicas, and network policies, is declaratively managed via Helm charts.
+
+### AWS
+To demonstrate the production-ready nature of the infrastructure, the following recording illustrates the real-time interaction with the **Streamlit UI**, hosted on **AWS EC2**. 
+
+The showcase highlights:
+- **Real-Time Inference:** Seamless communication between the UI and the **FastAPI** backend.
+- **Optimized Performance:** Sub-millisecond latency powered by **ONNX Runtime** and **Redis** caching.
+- **Cloud Stability:** The system running on a fully provisioned **Terraform** environment with automated **CI/CD** updates.
+
+![CRM MLOps Usage Demo](docs/aws/aws-streamlit-usage.gif)
 
 ## Local Environment & Deployment
 The repository is fully automated using a Makefile for unified developer experience. 
